@@ -115,7 +115,7 @@ function Update-Board {
 
 
 **************** Welome to the 15 Puzzle! ****************
- Move around the wildcard so that the number are in order
+ Move around the wildcard so that the numbers are in order
 **********************************************************
 
 '@
