@@ -27,7 +27,7 @@ function Get-Board {
 
     while($y -lt $board.Length) {
         $x = 0
-        Write-Host "`t`t" -NoNewline
+        Write-Host "`t" -NoNewline
         while($x -lt $board[$y].Length) {
             if($board[$y][$x] -eq $wildcard) {
                 $output = ''.PadLeft(2, 'X')
@@ -99,11 +99,8 @@ function Update-Board {
         $board[$loc_wildcard[0]][$loc_wildcard[1]] = $value
         $board[$loc_value[0]][$loc_value[1]] = 16
     }
-    else {Write-Host 'Not a valid movement'}
     return $board
 }
-
-
 
 # Completed Board
 # [object]$board_values = [int32[]](1..4), [int32[]](5..8), [int32[]](9..12), [int32[]](13..16)
@@ -114,13 +111,13 @@ function Update-Board {
 [string]$banner = @'
 
 
-**************** Welome to the 15 Puzzle! ****************
- Move around the wildcard so that the numbers are in order
-**********************************************************
+******** Welome to the 15 Puzzle! ********
+Order the numbers by swapping the wildcard
+******************************************
 
 '@
 
-
+Clear-Host
 Write-Host $banner -ForegroundColor Blue
 [bool]$completion_status = Get-CompletionStatus -board $board_values
 Get-Board -board $board_values -complete_board $completion_status
@@ -129,7 +126,8 @@ While(!$completion_status) {
     [int32]$update_value = Read-Host -Prompt 'Value to swap with wildcard'
     $board_values = Update-Board -board $board_values -value $update_value
     $completion_status = Get-CompletionStatus -board $board_values
-    Write-Host "`n`n"
+    Clear-Host
+    Write-Host $banner -ForegroundColor Blue
     Get-Board -board $board_values -complete_board $completion_status
 }
 
