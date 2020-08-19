@@ -14,6 +14,8 @@ using namespace System.Drawing
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName System.Windows.Forms
 
+[int32]$powershell_version = (Get-Host).Version.Major
+
 # Initializing the form
 $app_form = New-Object System.Windows.Forms.Form
 $app_form.ClientSize = [Size]::new(300, 285)
@@ -40,14 +42,25 @@ $label_description.Text = "Select a DNS Provider to Test Connectivity"
 $label_description.Font = [Font]::new("Arial", 10)
 
 
-# Adding dropdown box
+# Adding DNS dropdown box
 $dropdown_connection = New-Object System.Windows.Forms.ComboBox
-$dropdown_connection.Size = [Size]::new(260, 20)
+$dropdown_connection.Size = [Size]::new(200, 20)
 $dropdown_connection.Location = [Point]::new(20, 70)
 # Adding values to dropdown
-$dropdown_connection.Text = ""
+$dropdown_connection.Text = "Select a provider [Default: Google]"
 @("Google", "Cloudflare", "OpenDNS", "Quad9") | ForEach-Object {
     $dropdown_connection.Items.Add($_) | Out-Null
+}
+
+
+# Adding count box
+$dropdown_count = New-Object System.Windows.Forms.ComboBox
+$dropdown_count.Size = [Size]::new(40, 20)
+$dropdown_count.Location = [Point]::new(240, 70)
+# Adding values to dropdown
+$dropdown_count.Text = "4"
+@("1", "2", "3", "4") | ForEach-Object {
+    $dropdown_count.Items.Add($_) | Out-Null
 }
 
 
@@ -70,26 +83,51 @@ $btn_submit.Text = "Start"
 # Adding functionality to the button
 $btn_submit.Add_Click(
     {
+        # Initialize variables for the ping parameters
+        [string]$connection_address = ""
+        [int32]$connection_count = 4
+        # Address switch based on dropdown
+        Switch ($dropdown_connection.Text) {
+            "Google" {$connection_address = "8.8.8.8"}
+            "OpenDNS" {$connection_address = "208.67.222.222"}
+            "CloudFlare" {$connection_address = "1.1.1.1"}
+            "Quad9" {$connection_address = "9.9.9.9"}
+            default {$connection_address = "8.8.8.8"}
+        }
+        # Count switch based on dropdown
+        Switch ($dropdown_count.Text) {
+            "1" {$connection_count = 1}
+            "2" {$connection_count = 2}
+            "3" {$connection_count = 3}
+            "4" {$connection_count = 4}
+            default {$connection_count = 4}
+        }
+        # Output the table headers
         $label_output.Text = ""
         $label_output.Text += "Status          Latency"
         $label_output.Text += "`n"
         $label_output.Text += "***********************"
         $label_output.Text += "`n"
-        $connection_address = ""
-        # IP Address switch based on the dropdown value selected
-        Switch ($dropdown_connection.Text)
-        {
-            "Google" {$connection_address = "8.8.8.8"}
-            "OpenDNS" {$connection_address = "208.67.222.222"}
-            "CloudFlare" {$connection_address = "1.1.1.1"}
-            "Quad9" {$connection_address = "9.9.9.9"}
-        }
-        # Run test and output values to the output label
-        Test-Connection $connection_address | ForEach-Object {
-            $label_output.Text += $_.Status
-            $label_output.Text += "        "
-            $label_output.Text += $_.Latency
-            $label_output.Text += "`n"
+        # Running the connectivity test
+        @(1..$connection_count) | ForEach-Object {
+            if(Test-Connection $connection_address -Count 1 -Quiet) {
+                Test-Connection $connection_address -Count 1 | ForEach-Object {
+                    $label_output.Text += "Success"
+                    $label_output.Text += "        "
+                    # Switch between response time and latency based on version
+                    if($powershell_version -lt 7){
+                        $label_output.Text += $_.ResponseTime
+                    }
+                    else {
+                        $label_output.Text += $_.Latency
+                    }
+                    $label_output.Text += "`n"
+                }
+            }
+            else {
+                $label_output.Text += "Failure        *`n"
+            }
+            Start-Sleep -Seconds 1
         }
     }
 )
@@ -101,6 +139,7 @@ $app_form.controls.AddRange(
         $label_title,
         $label_description,
         $dropdown_connection,
+        $dropdown_count,
         $btn_submit,
         $label_output
     )
