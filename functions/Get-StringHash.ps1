@@ -38,11 +38,11 @@ Algorithm Selection
     if ($algorithm_select) {
         [string]$algorithm_id = Read-Host -Prompt $algorithm_pool;
         Switch  ($algorithm_id) {
-            '1' {$algorithm = 'SHA1'};
-            '2' {$algorithm = 'SHA256'};
-            '3' {$algorithm = 'SHA384'};
-            '4' {$algorithm = 'SHA512'};
-            '5' {$algorithm = 'MD5'};
+            '1'     {$algorithm = 'SHA1'};
+            '2'     {$algorithm = 'SHA256'};
+            '3'     {$algorithm = 'SHA384'};
+            '4'     {$algorithm = 'SHA512'};
+            '5'     {$algorithm = 'MD5'};
             default {$algorithm = 'SHA256'};
         };
     }
