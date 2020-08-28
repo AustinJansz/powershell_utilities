@@ -75,7 +75,12 @@ function Get-CompletionStatus {
         [object]$board
     )
 
-    [object]$completed_board = [int32[]](1..4),[int32[]](5..8),[int32[]](9..12),[int32[]](13..16)
+    [object]$completed_board = 
+    [int32[]](1..4),
+    [int32[]](5..8),
+    [int32[]](9..12),
+    [int32[]](13..16)
+
     [int32]$completed_rows = 0
 
     for($i = 0; $i -lt $board.Length; $i++) {
@@ -103,10 +108,17 @@ function Update-Board {
 }
 
 # Completed Board
-# [object]$board_values = [int32[]](1..4), [int32[]](5..8), [int32[]](9..12), [int32[]](13..16)
+# [object]$board_values = [int32[]](1..4),
+# [int32[]](5..8),
+# [int32[]](9..12),
+# [int32[]](13..16)
 
 # Sample board from Wikipedia
-[object]$board_values = [int32[]](15, 2, 1, 12), [int32[]](8, 5, 6, 11), [int32[]](4, 9, 10, 7), [int32[]](3, 14, 13, 16)
+[object]$board_values =
+[int32[]](15, 2, 1, 12), 
+[int32[]](8, 5, 6, 11),
+[int32[]](4, 9, 10, 7),
+[int32[]](3, 14, 13, 16)
 
 [string]$banner = @'
 
