@@ -13,6 +13,7 @@ $stack_original.Push(1)
 Write-Host 'Current Stack Values' -ForegroundColor Green
 $stack_original
 
+# Function that takes an unordered integer stack and orders it with 1 new stack
 function Get-SortedStack {
     [CmdletBinding()]
     param (
@@ -40,6 +41,7 @@ function Get-SortedStack {
     return $stack_sorted
 };
 
+# Display ordered stack
 Write-Host
 Write-Host 'Sorted Stack Values' -ForegroundColor Green
 Get-SortedStack -stack_input $stack_original
