@@ -9,6 +9,7 @@ DATE  : 2020-08-21
     A more secure version of Get-Random.
 #>
 
+# Function to return a random octet in the form of an unsigned integer value
 function New-RandomUInt32 {
     [CmdletBinding()]
     [Byte[]]$octet = 1..4;
@@ -17,6 +18,7 @@ function New-RandomUInt32 {
     return [System.BitConverter]::ToInt32($octet)
 };
 
+# Function to return a random number within the user defined range
 function New-RandomNumber {
     [CmdletBinding()]
     param (
@@ -26,6 +28,7 @@ function New-RandomNumber {
     return (New-RandomUInt32) % ($Maximum - $Minimum + 1) + $Minimum
 };
 
+# Function to return a random string value with a length defined by the user
 function New-RandomString {
     [CmdletBinding()]
     param (
